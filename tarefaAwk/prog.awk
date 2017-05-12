@@ -1,3 +1,5 @@
+# para executar, com o dados.txt na pasta
+# awk -f prog.awk dados.txt
 BEGIN { 
 	print "Nome - Situação"
 	count = 0
@@ -41,5 +43,5 @@ END{
 	str = apr > 1 ? " Foram aprovados" : " Foi aprovado"
 	print apr str
 	print exame " ficaram em exame" 
-	print repr " foram reprovados ", reprf " por frequencia e " reprn " por nota baixa"
+	print repr " foram reprovados, " reprf " por frequencia e " reprn " por nota baixa"
 }
