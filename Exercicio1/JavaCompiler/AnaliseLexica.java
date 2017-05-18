@@ -44,13 +44,16 @@ class AnaliseLexica {
 	
 				if (currchar >= '0' && currchar <= '9'){
 					String numero = new String(currchar+"");
+					arquivo.mark(1);
 					currchar1 =  arquivo.read();
 					currchar = (char) currchar1;
 					while(currchar >= '0' && currchar <= '9'){
+						numero+= currchar;
+						arquivo.mark(1);
 						currchar1 =  arquivo.read();
 						currchar = (char) currchar1;
-						numero+= currchar;
 					}
+					arquivo.reset();
 					
 					return (new Token (numero, TokenType.NUM));
 				}
