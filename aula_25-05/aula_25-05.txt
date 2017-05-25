@@ -1,0 +1,22 @@
+- flex é um gerador automatico de qualificadores léxicos
+- recebe como entrada um arquivo contendo uma especificação do analisador ĺéxico e devolve como saída um analisador léxico escrito em C
+
+arq.l --> |flex| -->  analisador lexico escrito em c --> |gcc| --> analisador lexico
+
+
+- geradores automáticos de analisadores léxicos recebem como entrada um arquivo que especifica o analisador em termos de expressões regulares 
+	exemplo:
+
+	ID: L(L|D)* { 'o que fazer quando encontrar um token desses' }
+	Num: DD* { código C que será executado quando for encontrado um número }
+	Palavras_reservadas: ___|___|____ { }
+
+
+-> baixa o l1.l no site, exemplo lex
+-> olha e compila
+-> flex l1.l
+-> gcc lex.yy.c
+-> ./a.out
+
+-> fazer um analiador léxico para a linguagem mojica (tá no site)
+-> deve classificar todas as palavras dos programas
