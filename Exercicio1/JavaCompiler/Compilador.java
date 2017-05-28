@@ -25,6 +25,8 @@ class Compilador{
 			CodeInterpreter interpreter = new CodeInterpreter();
 			interpreter.interpret(arv);
 
+			System.out.println("Resultado: " + interpreter.getResult());
+
 		}catch(Exception e)
 		{			
 			e.printStackTrace();
