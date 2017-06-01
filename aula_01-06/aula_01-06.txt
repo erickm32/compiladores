@@ -1,0 +1,11 @@
+JavaCC
+
+- java compiler compiler
+- gerador automático de analisadores sintáticos
+- gera analisadorees top down 
+- a gramática não pode ter recursão à esquerda nem alternativas que começam com o mesmo símbolo
+
+| especificação	|
+| léxica e 		|		-> 		| javacc|  ->		analisador léxico + sintático em java
+| sintática		|
+

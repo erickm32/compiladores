@@ -1,0 +1,54 @@
+PARSER_BEGIN(Mojica)
+import java.io.*;
+public class Mojica {
+
+  public static void main(String args[]) throws ParseException,IOException {
+    
+    Mojica mojica = new Mojica(new FileInputStream(args[0]));
+    mojica.Prog();
+  }
+
+}
+
+PARSER_END(Mojica)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+  <VOID: "void">
+| <MAIN: "main">
+| <LBRACE:"(">
+| <RBRACE: ")">
+| <LCURLY:"{">
+| <RCURLY:"}">
+
+
+}
+
+TOKEN :
+{
+ <OPA: ("+"|"-")>
+|
+  < ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*>
+
+}
+
+
+void Prog () :
+{}
+{ <VOID> <MAIN> <LBRACE> <RBRACE>
+  <LCURLY>
+ // VarDecl()
+ // SeqComandos()
+  <RCURLY> 
+ <EOF> 
+}
+	
+
