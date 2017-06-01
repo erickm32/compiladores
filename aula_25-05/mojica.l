@@ -2,14 +2,14 @@ letra 						[a-zA-Z]
 digito 						[0-9]
 digitos 					{digito}+
 facao_opcional 				(.{digitos})?
-expoente_opcional 			(E (+ | -)? {digitos})?
-letraoudigito 				{letra} | {digito}
+expoente_opcional 			(E(\+|-)?{digitos})?
+letraoudigito 				{letra}|{digito}
 finalsublinhado  			_{letraoudigito}+
 
-identificador				{letra}+{letraoudigito}*{finalsublinhado}*
-numero						{digitos}+{facao_opcional}*{expoente_opcional}*
+identificador				{letra}+({letraoudigito})*({finalsublinhado})*
+numero						{digitos}+({facao_opcional})*({expoente_opcional})*
 
-palavra_reservada 			[void|int|bool|if|while|do|return|true|false|not|and|or|leq]
+palavra_reservada 			"void"|"int"|"bool"|"if"|"while"|"do"|"return"|"true"|"false"|"not"|"and"|"or"|"leq"
 
 %%
 
@@ -27,11 +27,12 @@ palavra_reservada 			[void|int|bool|if|while|do|return|true|false|not|and|or|leq
 "*"	{ printf("operador * \n"); }
 "/"	{ printf("operador / \n"); }
 
-{identificador}			{ printf("identificador: %s\n",yytext); } 
-{numero} 				{ printf("numero: %s\n",yytext); } 
+{palavra_reservada}	{ printf("palavra_reservada: %s\n",yytext); } 
 
-{palavra_reservada}		{ printf("palavra_reservada: %s\n",yytext); } 
+{identificador}	{ printf("identificador: %s\n",yytext); } 
+{numero} { printf("numero: %s\n",yytext); } 
 
+. { printf("Símbolo %s não esperado.\n", yytext); }
 %%
 int yywrap();
 
