@@ -32,6 +32,8 @@ palavra_reservada 			"void"|"int"|"bool"|"if"|"while"|"do"|"return"|"true"|"fals
 {identificador}	{ printf("identificador: %s\n",yytext); } 
 {numero} { printf("numero: %s\n",yytext); } 
 
+" " { printf("Pulando espaço.\n"); }
+
 . { printf("Símbolo %s não esperado.\n", yytext); }
 %%
 int yywrap();
