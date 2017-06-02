@@ -9,3 +9,8 @@ JavaCC
 | léxica e 		|		-> 		| javacc|  ->		analisador léxico + sintático em java
 | sintática		|
 
+Tem o começo da especificação da mojica como exemplo no site dele
+
+javacc arquivo_da_especificacao
+javac *.java
+java ClassPrincipal
