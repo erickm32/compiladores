@@ -9,7 +9,7 @@ finalsublinhado  			_{letraoudigito}+
 identificador				{letra}+({letraoudigito})*({finalsublinhado})*
 numero						{digitos}+({facao_opcional})*({expoente_opcional})*
 
-palavra_reservada 			"void"|"int"|"bool"|"if"|"while"|"do"|"return"|"true"|"false"|"not"|"and"|"or"|"leq"
+palavra_reservada 			"void"|"int"|"bool"|"if"|"while"|"do"|"return"|"true"|"false"|"not"|"and"|"or"|"leq"|"skip"
 
 %%
 
@@ -32,7 +32,9 @@ palavra_reservada 			"void"|"int"|"bool"|"if"|"while"|"do"|"return"|"true"|"fals
 {identificador}	{ printf("identificador: %s\n",yytext); } 
 {numero} { printf("numero: %s\n",yytext); } 
 
-" " { printf("Pulando espaço.\n"); }
+" "|"\n"|"\t" { 
+				//printf("Pulando espaçamento.\n"); 
+				}
 
 . { printf("Símbolo %s não esperado.\n", yytext); }
 %%
