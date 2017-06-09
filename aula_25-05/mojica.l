@@ -1,8 +1,8 @@
 letra 						[a-zA-Z]
 digito 						[0-9]
 digitos 					{digito}+
-facao_opcional 				(.{digitos})?
-expoente_opcional 			(E(\+|-)?{digitos})?
+facao_opcional 				("."{digitos})?
+expoente_opcional 			("E"("+"|"-")?{digitos})?
 letraoudigito 				{letra}|{digito}
 finalsublinhado  			_{letraoudigito}+
 
@@ -32,7 +32,7 @@ palavra_reservada 			"void"|"int"|"bool"|"if"|"while"|"do"|"return"|"true"|"fals
 {identificador}	{ printf("identificador: %s\n",yytext); } 
 {numero} { printf("numero: %s\n",yytext); } 
 
-" "|"\n"|"\t" { 
+" "|"\n"|"\t"|"\r" { 
 				//printf("Pulando espaçamento.\n"); 
 				}
 
