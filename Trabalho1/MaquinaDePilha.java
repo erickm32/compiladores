@@ -1,14 +1,14 @@
 import java.io.*;
 import java.util.Stack;
 
-class Trabalho {
+class MaquinaDePilha {
 
 	public static void main(String[] args) {
 		BufferedReader arquivo;
 		try {
 		 	arquivo = new BufferedReader(new FileReader(args[0]));
 
-		 	Stack<Integer> pilha = new Stack();
+		 	Stack<Integer> pilha = new Stack<>();
 		 	int op1, op2;
 
 		 	String linha = arquivo.readLine();
