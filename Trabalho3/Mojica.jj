@@ -24,7 +24,7 @@ TOKEN :
 {
   <VOID: "void">
 | <MAIN: "main">
-| <<>:"(">
+| <LBRACE:"(">
 | <RBRACE: ")">
 | <LCURLY:"{">
 | <RCURLY:"}">
@@ -41,10 +41,10 @@ TOKEN :
 | <AND: "and">
 | <OR: "or">
 | <LEQ: "leq">
-|<TOKEN_id :  ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])* ("_"*(["a"-"z","A"-"Z","0"-"9"])+)* >
-
-|<OPA: ("+"|"-")>
-|<OPM: ("*"|"/")>
+| <TOKEN_id :  ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])* (("_")*(["a"-"z","A"-"Z","0"-"9"])+)* >
+| <TOKEN_numliteral: (["0"-"9"]+) (.(["0"-"9"]+))? (E ("+" | "-")? (["0"-"9"]+))?>
+| <OPA: ("+"|"-")>
+| <OPM: ("*"|"/")>
 
 }
 
@@ -64,7 +64,7 @@ void Prog () :
   VarDecl()
   SeqComandos()
   <RCURLY> 
- <EOF> 
+  <EOF>
 }
 
 void VarDecl () :
@@ -86,37 +86,89 @@ void SeqComandos () :
 
 void Comando () :
 {}
-{ <skip();> | <TOKEN_id> <Comando2()> 
-	|<IF> <LBRACE> <BoolExp()> <DO> <LCURLY> <SeqComandos()> <RCURLY>
-	|<WHILE> <LBRACE> <BoolExp()> <RBRACE> <DO> <LCURLY> <SeqComandos()> <RCURLY>
-	|<RETURN <TipoReturn()>>
+{ <skip();> | <TOKEN_id> Comando2() 
+	|<IF> <LBRACE> BoolExp() <DO> <LCURLY> SeqComandos() <RCURLY>
+	|<WHILE> <LBRACE> BoolExp() <RBRACE> <DO> <LCURLY> SeqComandos() <RCURLY>
+	|<RETURN> TipoReturn()
 
 
 void Comando2 () :
 {}
-{<OP_ATRIB> <Exps()> <PEV> | <LBRACE> <ListaExp> <RBRACE> <PEV>
+{<OP_ATRIB> Exps() <PEV> | <LBRACE> ListaExp() <RBRACE> <PEV>
 
 void BoolExp () :
 {}
 { <TRUE> | <FALSE> | <NOT> | <LBRACE> <BoolExp()> <RBRACE>
-	|<AND> <LBRACE> <BoolExp()> <RBRACE> <LBRACE> <BoolExp()> <RBRACE>
-	|<OR> <LBRACE> <BoolExp()> <RBRACE> <LBRACE> <BoolExp()> <RBRACE>
-	|<LEQ> <LBRACE> <Exps()> <RBRACE> <LBRACE> <Exps()> <RBRACE>
+	|<AND> <LBRACE> BoolExp() <RBRACE> <LBRACE> BoolExp() <RBRACE>
+	|<OR> <LBRACE> BoolExp() <RBRACE> <LBRACE> BoolExp() <RBRACE>
+	|<LEQ> <LBRACE> Exps() <RBRACE> <LBRACE> Exps() <RBRACE>
 }
 
 void TipoReturn () :
 {}
-{ <Exps> | <BoolExp>
+{ Exps | BoolExp
 }
 
 void Exps() :
 {}
-{ <Termo()> <Exps2()>  
+{ Termo() Exps2()
 
 }
 
 void Exps2() :
 {}
-{ (<OPA> <TERMO> <Exps2>)*
+{ (<OPA> Termo() Exps2())*
+}
+
+void Termo() :
+{}
+{ Fator() Termo2()
+}
+
+void Termo2() :
+{}
+{(<OPM> Fator())*
+}
+
+void Fator() :
+{}
+{ <TOKEN_id> Fator2()
+}
+
+void Fator2() :
+{}
+{ <LBRACE> ListaExp() <RBRACE>
+	|TOKEN_numliteral
+	|<LBRACE> Exp() <RBRACE>
+}
+
+void ListaExp() :
+{}
+{ Exp() | ListaExp2()
+}
+
+void ListaExp2() :
+{}
+{ <PEV> Exp()
+}
+
+void LFunc() :
+{}
+{ (Func() LFunc())*
+}
+
+void Func() :
+{}
+{ Tipo() <TOKEN_id> <LBRACE> ListaArg() <RBRACE> <LCURLY> VarDecl() SeqComandos <RCURLY>
+}
+
+void ListaArg() :
+{}
+{ TIPO() <TOKEN_id> ListaArg2()
+}
+
+void ListaArg2() :
+{}
+{ <PEV> Tipo() <TOKEN_id> 
 }
 
