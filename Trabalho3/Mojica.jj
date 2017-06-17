@@ -29,6 +29,7 @@ TOKEN :
 | <LCURLY:"{">
 | <RCURLY:"}">
 | <INT: "int">
+| <BOOL: "bool">
 | <OP_ATRB: ":=" >
 | <PEV: ";">
 | <IF: "if">
@@ -42,18 +43,10 @@ TOKEN :
 | <OR: "or">
 | <LEQ: "leq">
 | <TOKEN_id :  ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])* (("_")*(["a"-"z","A"-"Z","0"-"9"])+)* >
-| <TOKEN_numliteral: (["0"-"9"]+) (.(["0"-"9"]+))? (E ("+" | "-")? (["0"-"9"]+))?>
+| <TOKEN_numliteral: ((["0"-"9"])+) ("."((["0"-"9"])+))? ("E" ("+" | "-")? ((["0"-"9"])+))?>
 | <OPA: ("+"|"-")>
 | <OPM: ("*"|"/")>
-
-}
-
-TOKEN :
-{
- <OPA: ("+"|"-")>
-|
-  < ID: >
-
+| <SKIP1: (" " | "\t" | "\n" | "\r")>
 }
 
 
@@ -69,7 +62,7 @@ void Prog () :
 
 void VarDecl () :
 {}
-{ (tipo() token_id ";") *
+{ (Tipo() <TOKEN_id> <PEV>) *
   
 }
 
@@ -81,24 +74,25 @@ void Tipo () :
 
 void SeqComandos () :
 {}
-{ Comando() *
+{ (Comando())*
 }
 
 void Comando () :
 {}
-{ <skip();> | <TOKEN_id> Comando2() 
+{ <SKIP1> | <TOKEN_id> Comando2() 
 	|<IF> <LBRACE> BoolExp() <DO> <LCURLY> SeqComandos() <RCURLY>
 	|<WHILE> <LBRACE> BoolExp() <RBRACE> <DO> <LCURLY> SeqComandos() <RCURLY>
 	|<RETURN> TipoReturn()
-
+}
 
 void Comando2 () :
 {}
-{<OP_ATRIB> Exps() <PEV> | <LBRACE> ListaExp() <RBRACE> <PEV>
+{ <OP_ATRB> Exps() <PEV> | <LBRACE> ListaExp() <RBRACE> <PEV>
+}
 
 void BoolExp () :
 {}
-{ <TRUE> | <FALSE> | <NOT> | <LBRACE> <BoolExp()> <RBRACE>
+{ <TRUE> | <FALSE> | <NOT> | <LBRACE> BoolExp() <RBRACE>
 	|<AND> <LBRACE> BoolExp() <RBRACE> <LBRACE> BoolExp() <RBRACE>
 	|<OR> <LBRACE> BoolExp() <RBRACE> <LBRACE> BoolExp() <RBRACE>
 	|<LEQ> <LBRACE> Exps() <RBRACE> <LBRACE> Exps() <RBRACE>
@@ -106,7 +100,7 @@ void BoolExp () :
 
 void TipoReturn () :
 {}
-{ Exps | BoolExp
+{ Exps() | BoolExp()
 }
 
 void Exps() :
@@ -138,18 +132,18 @@ void Fator() :
 void Fator2() :
 {}
 { <LBRACE> ListaExp() <RBRACE>
-	|TOKEN_numliteral
-	|<LBRACE> Exp() <RBRACE>
+	|<TOKEN_numliteral>
+	|<LBRACE> Exps() <RBRACE>
 }
 
 void ListaExp() :
 {}
-{ Exp() | ListaExp2()
+{ Exps() | ListaExp2()
 }
 
 void ListaExp2() :
 {}
-{ <PEV> Exp()
+{ <PEV> Exps()
 }
 
 void LFunc() :
@@ -159,12 +153,12 @@ void LFunc() :
 
 void Func() :
 {}
-{ Tipo() <TOKEN_id> <LBRACE> ListaArg() <RBRACE> <LCURLY> VarDecl() SeqComandos <RCURLY>
+{ Tipo() <TOKEN_id> <LBRACE> ListaArg() <RBRACE> <LCURLY> VarDecl() SeqComandos() <RCURLY>
 }
 
 void ListaArg() :
 {}
-{ TIPO() <TOKEN_id> ListaArg2()
+{ Tipo() <TOKEN_id> ListaArg2()
 }
 
 void ListaArg2() :
