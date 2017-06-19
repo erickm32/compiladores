@@ -92,7 +92,7 @@ void Comando2 () :
 
 void BoolExp () :
 {}
-{ <TRUE> | <FALSE> | <NOT> | <LBRACE> BoolExp() <RBRACE>
+{ <TRUE> | <FALSE> | <NOT> <LBRACE> BoolExp() <RBRACE>
 	|<AND> <LBRACE> BoolExp() <RBRACE> <LBRACE> BoolExp() <RBRACE>
 	|<OR> <LBRACE> BoolExp() <RBRACE> <LBRACE> BoolExp() <RBRACE>
 	|<LEQ> <LBRACE> Exps() <RBRACE> <LBRACE> Exps() <RBRACE>
@@ -105,13 +105,13 @@ void TipoReturn () :
 
 void Exps() :
 {}
-{ Termo()  Exps2()
+{ Termo() Exps2() 
 
 }
 
 void Exps2() :
 {}
-{ (<OPA> Termo())?
+{ ( <OPA> Termo() Exps2())?
 }
 
 void Termo() :
@@ -121,25 +121,17 @@ void Termo() :
 
 void Termo2() :
 {}
-{(<OPM> Fator())?
+{(<OPM> Fator() Termo2())?
 }
 
 void Fator() :
 {}
-{ <TOKEN_id> Fator2()
+{
+	<TOKEN_id> ( <LBRACE> ListaExp() <RBRACE>)?
+	| <TOKEN_numliteral> 
+	| <LBRACE> Exps() <RBRACE>
 }
 
-void Fator2() :
-{}
-{ <LBRACE> fator3()
-	|<TOKEN_numliteral>
-	
-}
-void fator3() :
-{}
-{
-ListaExp() <RBRACE> | Exps() <RBRACE>
-}
 
 void ListaExp() :
 {}
