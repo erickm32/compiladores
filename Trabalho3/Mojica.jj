@@ -43,10 +43,10 @@ TOKEN :
 | <OR: "or">
 | <LEQ: "leq">
 | <TOKEN_id :  ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])* (("_")*(["a"-"z","A"-"Z","0"-"9"])+)* >
-| <TOKEN_numliteral: ((["0"-"9"])+) ("."((["0"-"9"])+))? ("E" ("+" | "-")? ((["0"-"9"])+))?>
+| <TOKEN_numliteral: (["0"-"9"])+ ("."((["0"-"9"])+))? ("E" ("+" | "-")? ((["0"-"9"])+))?>
 | <OPA: ("+"|"-")>
 | <OPM: ("*"|"/")>
-| <SKIP1: (" " | "\t" | "\n" | "\r")>
+| <TOKEN_skip: (" " | "\t" | "\n" | "\r")>
 }
 
 
@@ -74,12 +74,12 @@ void Tipo () :
 
 void SeqComandos () :
 {}
-{ (Comando())*
+{ (Comando())?
 }
 
 void Comando () :
 {}
-{ <SKIP1> | <TOKEN_id> Comando2() 
+{ <TOKEN_skip> <LBRACE> <RBRACE> <PEV> | <TOKEN_id> Comando2() 
 	|<IF> <LBRACE> BoolExp() <DO> <LCURLY> SeqComandos() <RCURLY>
 	|<WHILE> <LBRACE> BoolExp() <RBRACE> <DO> <LCURLY> SeqComandos() <RCURLY>
 	|<RETURN> TipoReturn()
@@ -105,23 +105,23 @@ void TipoReturn () :
 
 void Exps() :
 {}
-{ Termo() Exps2()
+{ Termo()  Exps2()
 
 }
 
 void Exps2() :
 {}
-{ (<OPA> Termo() Exps2())*
+{ (<OPA> Termo())?
 }
 
 void Termo() :
 {}
-{ Fator() Termo2()
+{ Fator()  Termo2()
 }
 
 void Termo2() :
 {}
-{(<OPM> Fator())*
+{(<OPM> Fator())?
 }
 
 void Fator() :
@@ -131,14 +131,19 @@ void Fator() :
 
 void Fator2() :
 {}
-{ <LBRACE> ListaExp() <RBRACE>
+{ <LBRACE> fator3()
 	|<TOKEN_numliteral>
-	|<LBRACE> Exps() <RBRACE>
+	
+}
+void fator3() :
+{}
+{
+ListaExp() <RBRACE> | Exps() <RBRACE>
 }
 
 void ListaExp() :
 {}
-{ Exps() | ListaExp2()
+{ Exps()  ListaExp2()
 }
 
 void ListaExp2() :
@@ -148,7 +153,7 @@ void ListaExp2() :
 
 void LFunc() :
 {}
-{ (Func() LFunc())*
+{ (Func() LFunc())?
 }
 
 void Func() :
@@ -158,7 +163,7 @@ void Func() :
 
 void ListaArg() :
 {}
-{ Tipo() <TOKEN_id> ListaArg2()
+{ Tipo() <TOKEN_id>  ListaArg2()
 }
 
 void ListaArg2() :
