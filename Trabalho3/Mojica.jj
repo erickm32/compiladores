@@ -12,12 +12,8 @@ public class Mojica {
 
 PARSER_END(Mojica)
 
-SKIP :
-{
-  " "
-| "\t"
-| "\n"
-| "\r"
+<*> SKIP: {
+  < " " | "\t" | "\r" | "\n" | "\r\n" >
 }
 
 TOKEN :
@@ -32,6 +28,7 @@ TOKEN :
 | <BOOL: "bool">
 | <OP_ATRB: ":=" >
 | <PEV: ";">
+| <V: ",">
 | <IF: "if">
 | <DO: "do">
 | <WHILE: "while">
@@ -42,11 +39,11 @@ TOKEN :
 | <AND: "and">
 | <OR: "or">
 | <LEQ: "leq">
+| <TOKEN_skip: ("skip")>
 | <TOKEN_id :  ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])* (("_")*(["a"-"z","A"-"Z","0"-"9"])+)* >
 | <TOKEN_numliteral: (["0"-"9"])+ ("."((["0"-"9"])+))? ("E" ("+" | "-")? ((["0"-"9"])+))?>
 | <OPA: ("+"|"-")>
 | <OPM: ("*"|"/")>
-| <TOKEN_skip: (" " | "\t" | "\n" | "\r")>
 }
 
 
@@ -57,6 +54,7 @@ void Prog () :
   VarDecl()
   SeqComandos()
   <RCURLY> 
+  (Func())*
   <EOF>
 }
 
@@ -74,25 +72,29 @@ void Tipo () :
 
 void SeqComandos () :
 {}
-{ (Comando())?
+{ (Comando())*
 }
 
 void Comando () :
 {}
-{ <TOKEN_skip> <LBRACE> <RBRACE> <PEV> | <TOKEN_id> Comando2() 
-	|<IF> <LBRACE> BoolExp() <DO> <LCURLY> SeqComandos() <RCURLY>
+{ <TOKEN_skip> <LBRACE> <RBRACE> <PEV> 
+  |<TOKEN_id> Comando2() 
+	|<IF> <LBRACE> BoolExp() <RBRACE> <LCURLY> SeqComandos() <RCURLY>
 	|<WHILE> <LBRACE> BoolExp() <RBRACE> <DO> <LCURLY> SeqComandos() <RCURLY>
-	|<RETURN> TipoReturn()
+	|<RETURN> TipoReturn() <PEV>
 }
 
 void Comando2 () :
 {}
-{ <OP_ATRB> Exps() <PEV> | <LBRACE> ListaExp() <RBRACE> <PEV>
+{ <OP_ATRB> Exps() <PEV> 
+  |<LBRACE> (ListaExp())* <RBRACE> <PEV> 
 }
 
 void BoolExp () :
 {}
-{ <TRUE> | <FALSE> | <NOT> <LBRACE> BoolExp() <RBRACE>
+{ <TRUE> 
+  |<FALSE> 
+  |<NOT> <LBRACE> BoolExp() <RBRACE>
 	|<AND> <LBRACE> BoolExp() <RBRACE> <LBRACE> BoolExp() <RBRACE>
 	|<OR> <LBRACE> BoolExp() <RBRACE> <LBRACE> BoolExp() <RBRACE>
 	|<LEQ> <LBRACE> Exps() <RBRACE> <LBRACE> Exps() <RBRACE>
@@ -140,7 +142,7 @@ void ListaExp() :
 
 void ListaExp2() :
 {}
-{ <PEV> Exps()
+{ (<V> Exps())*
 }
 
 void LFunc() :
@@ -155,11 +157,11 @@ void Func() :
 
 void ListaArg() :
 {}
-{ Tipo() <TOKEN_id>  ListaArg2()
+{ (Tipo() <TOKEN_id>  (ListaArg2())* )*
 }
 
 void ListaArg2() :
 {}
-{ <PEV> Tipo() <TOKEN_id> 
+{ <V> Tipo() <TOKEN_id> 
 }
 
