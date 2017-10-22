@@ -12,5 +12,5 @@ void main(){
 int funcao( int f ){
 	int g;
 	g := 9;
-	return f*g;
+	return f*g
 }

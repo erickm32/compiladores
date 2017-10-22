@@ -19,7 +19,7 @@ class MaquinaDePilha {
 		 		if(first.equalsIgnoreCase("PUSH")){
 		 			pilha.push(new Integer(splitted[1]));
 		 		}
-		 		else if (first.equalsIgnoreCase("ADD")) {
+		 		else if (first.equalsIgnoreCase("SUM")) {
 		 			op2 = pilha.pop().intValue();
 		 			op1 = pilha.pop().intValue();
 		 			pilha.push(new Integer(op1 + op2));
